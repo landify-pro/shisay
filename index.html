@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КП для Shi Say - Александр Юртаев</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --blush: #d4a89c;
+    --blush-light: #e8cfc7;
+    --dark: #1a1614;
+    --cream: #f7f0eb;
+    --cream-dark: #efe4dc;
+    --mid: #8a7060;
+    --white: #faf7f4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PRELOADER ===== */
+  .preloader {
+    position: fixed;
+    inset: 0;
+    background: var(--dark);
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease;
+  }
+  .preloader.done { opacity: 0; pointer-events: none; }
+  .preloader-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    letter-spacing: 0.5em;
+    color: var(--blush);
+    text-transform: uppercase;
+  }
+  .preloader-line {
+    width: 120px; height: 1px;
+    background: rgba(212,168,156,0.2);
+    margin-top: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .preloader-line::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%; width: 0%;
+    background: var(--blush);
+    animation: preload 1.5s ease forwards;
+  }
+  @keyframes preload { to { width: 100%; } }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(212,168,156,0.07) 0%, transparent 70%);
+    animation: float 8s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(-30px, 20px); }
+  }
+
+  .hero-brand {
+    font-size: 9px;
+    letter-spacing: 0.6em;
+    color: var(--blush);
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    opacity: 0;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 4.5vw, 68px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--cream);
+  }
+  .hero-title em { font-style: italic; color: var(--blush-light); }
+  .hero-title .line { display: block; overflow: hidden; }
+  .hero-title .line span { display: inline-block; transform: translateY(110%); }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 40px; left: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: rgba(247,240,235,0.2);
+    text-transform: uppercase;
+    opacity: 0;
+  }
+  .scroll-line {
+    width: 32px; height: 1px;
+    background: rgba(247,240,235,0.1);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    left: -100%; top: 0;
+    width: 100%; height: 100%;
+    background: var(--blush);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0% { left: -100%; } 100% { left: 100%; } }
+
+  .hero-right {
+    background: var(--blush);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(26,22,20,0.06) 0%, transparent 70%);
+    animation: float 10s ease-in-out infinite reverse;
+  }
+
+  .hero-right::after {
+    content: 'SHI SAY';
+    position: absolute;
+    bottom: 40px; right: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: rgba(26,22,20,0.12);
+  }
+
+  .hero-sub {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: rgba(26,22,20,0.5);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+  }
+
+  .hero-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    line-height: 1.7;
+    color: var(--dark);
+    opacity: 0;
+  }
+
+  /* ===== STATS ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--dark);
+  }
+  .stat {
+    padding: 60px 48px;
+    border-right: 1px solid rgba(247,240,235,0.05);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--blush-light);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(247,240,235,0.3);
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* ===== SECTION ===== */
+  .section { padding: 120px 80px; }
+
+  .section-tag {
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    color: var(--blush);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--blush);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 3.5vw, 52px);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 56px;
+  }
+
+  /* ===== FORMAT CARDS ===== */
+  .formats { background: var(--white); }
+
+  .format-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .format-card {
+    background: var(--dark);
+    padding: 48px 36px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+  }
+  .format-card:hover { transform: translateY(-4px); }
+  .format-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--blush);
+    transition: width 0.5s ease;
+  }
+  .format-card:hover::before { width: 100%; }
+
+  /* Выделенная карточка - Креативный директор */
+  .format-card.highlight {
+    background: var(--blush);
+  }
+  .format-card.highlight::before { background: var(--dark); }
+
+  .format-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    margin-bottom: 28px;
+    background: rgba(247,240,235,0.06);
+    color: var(--blush-light);
+  }
+  .format-card.highlight .format-badge {
+    background: var(--dark);
+    color: var(--cream);
+  }
+
+  .format-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 60px;
+    font-weight: 300;
+    line-height: 1;
+    color: rgba(247,240,235,0.06);
+    margin-bottom: -16px;
+  }
+  .format-card.highlight .format-num { color: rgba(26,22,20,0.07); }
+
+  .format-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .format-card.highlight .format-title { color: var(--dark); }
+
+  .format-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(247,240,235,0.45);
+    margin-bottom: 28px;
+  }
+  .format-card.highlight .format-desc { color: rgba(26,22,20,0.55); }
+
+  .format-includes {
+    list-style: none;
+    margin-bottom: 36px;
+    flex-grow: 1;
+  }
+  .format-includes li {
+    font-size: 12px;
+    color: rgba(247,240,235,0.35);
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(247,240,235,0.05);
+    display: flex;
+    gap: 10px;
+  }
+  .format-card.highlight .format-includes li {
+    color: rgba(26,22,20,0.5);
+    border-bottom-color: rgba(26,22,20,0.08);
+  }
+  .format-includes li::before { content: '-'; color: var(--blush); }
+  .format-card.highlight .format-includes li::before { color: var(--dark); }
+
+  .format-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+  }
+  .format-card.highlight .format-price { color: var(--dark); }
+
+  .format-price-sub {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(247,240,235,0.25);
+    margin-top: 6px;
+  }
+  .format-card.highlight .format-price-sub { color: rgba(26,22,20,0.35); }
+
+  .format-old-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: rgba(247,240,235,0.15);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+  }
+
+  /* ===== WHY CREATIVE DIRECTOR ===== */
+  .why-kd { background: var(--dark); }
+  .why-kd .section-tag { color: var(--blush-light); }
+  .why-kd .section-tag::before { background: var(--blush-light); }
+  .why-kd .section-title { color: var(--cream); }
+
+  .why-kd-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(247,240,235,0.05);
+  }
+
+  .why-kd-card {
+    background: var(--dark);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s ease;
+  }
+  .why-kd-card:hover { background: #231e1b; }
+
+  .why-kd-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 0;
+    background: var(--blush);
+    transition: height 0.5s ease;
+  }
+  .why-kd-card:hover::before { height: 100%; }
+
+  .why-kd-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: rgba(212,168,156,0.15);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .why-kd-title {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: var(--blush-light);
+  }
+
+  .why-kd-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(247,240,235,0.45);
+  }
+
+  /* ===== WHY REELS ===== */
+  .why-reels { background: var(--cream-dark); }
+
+  .why-reels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--blush);
+  }
+  .why-reels-card {
+    background: var(--cream-dark);
+    padding: 44px 32px;
+  }
+  .why-reels-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--blush);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .why-reels-title {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+  .why-reels-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--mid);
+  }
+
+  /* ===== CASES ===== */
+  .cases { background: var(--cream); }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .case-card {
+    background: var(--dark);
+    padding: 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  .case-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blush), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+  .case-card:hover::before { transform: scaleX(1); }
+
+  .case-card.featured {
+    grid-column: span 2;
+    background: var(--blush);
+  }
+  .case-card.featured .case-num,
+  .case-card.featured .case-title,
+  .case-card.featured .case-metric-val { color: var(--dark); }
+  .case-card.featured .case-tag,
+  .case-card.featured .case-metric-label { color: rgba(26,22,20,0.45); }
+  .case-card.featured::before { background: linear-gradient(90deg, var(--dark), transparent); }
+
+  .case-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--blush);
+    margin-bottom: 16px;
+  }
+  .case-tag {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(247,240,235,0.25);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .case-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 28px;
+    line-height: 1.3;
+  }
+  .case-metrics {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .case-metric-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--blush-light);
+    line-height: 1;
+  }
+  .case-metric-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(247,240,235,0.3);
+    text-transform: uppercase;
+    margin-top: 5px;
+  }
+  .case-text {
+    font-size: 13px;
+    color: rgba(247,240,235,0.4);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .case-card.featured .case-text { color: rgba(26,22,20,0.5); }
+
+  .case-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--blush);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: gap 0.3s ease;
+  }
+  .case-link:hover { gap: 14px; }
+  .case-link::after { content: '->'; }
+  .case-card.featured .case-link { color: var(--dark); }
+
+  /* ===== CTA ===== */
+  .cta {
+    background: var(--dark);
+    padding: 160px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(212,168,156,0.05) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .cta-title em { font-style: italic; color: var(--blush-light); }
+  .cta-sub {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: rgba(247,240,235,0.3);
+    text-transform: uppercase;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--blush);
+    color: var(--dark);
+    text-decoration: none;
+    padding: 20px 48px;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--blush-light);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: 0;
+  }
+  .cta-btn:hover::before { transform: scaleX(1); }
+  .cta-btn span, .cta-btn-arrow { position: relative; z-index: 1; }
+  .cta-btn-arrow { position: relative; z-index: 1; font-size: 14px; }
+  .cta-btn:hover { gap: 22px; }
+  .cta-author {
+    margin-top: 80px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: rgba(247,240,235,0.2);
+    letter-spacing: 0.1em;
+    position: relative;
+  }
+
+  /* ===== REVEAL ===== */
+  .reveal { opacity: 0; transform: translateY(36px); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 60px 28px; min-height: 55vh; }
+    .hero-right { padding: 56px 28px; min-height: 40vh; }
+    .stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid rgba(247,240,235,0.05); padding: 40px 28px; }
+    .section { padding: 80px 24px; }
+    .format-grid { grid-template-columns: 1fr; }
+    .why-kd-grid { grid-template-columns: 1fr; }
+    .why-reels-grid { grid-template-columns: 1fr; }
+    .case-grid { grid-template-columns: 1fr; }
+    .case-card.featured { grid-column: span 1; }
+    .cta { padding: 80px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader">
+  <div class="preloader-text">Shi Say</div>
+  <div class="preloader-line"></div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="hero-brand">Предложение для Shi Say - 2026</span>
+    <h1 class="hero-title">
+      <span class="line"><span>Контент, который</span></span>
+      <span class="line"><span><em>растит бренд</em></span></span>
+      <span class="line"><span>без лишних затрат</span></span>
+    </h1>
+    <div class="hero-scroll-hint">
+      <div class="scroll-line"></div>
+      листай вниз
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-sub">Александр Юртаев - рилс-продюсер, креативный директор</div>
+    <p class="hero-desc">Помогаю компаниям и брендам выстроить систему контента, которая приводит аудиторию и продажи. Не создаю контент вместо вас - я делаю так, чтобы ваша команда создавала его правильно.</p>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stat reveal">
+    <div class="stat-num">1 млрд+</div>
+    <div class="stat-label">просмотров<br>реализовано клиентам</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">3 млн+</div>
+    <div class="stat-label">подписчиков<br>привлечено для брендов</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">5 лет</div>
+    <div class="stat-label">в видеопродакшне<br>и контент-маркетинге</div>
+  </div>
+</section>
+
+<!-- FORMATS -->
+<section class="section formats">
+  <div class="section-tag reveal">Форматы работы</div>
+  <h2 class="section-title reveal">Три варианта -<br>от стратегии до продакшна</h2>
+
+  <div class="format-grid">
+
+    <!-- 01 - ИИ контент (первый, тёмный) -->
+    <div class="format-card reveal">
+      <div class="format-num">01</div>
+      <div class="format-badge">Нейросети</div>
+      <div class="format-title">ИИ-контент<br>под ключ</div>
+      <div class="format-desc">Создаю стильные ролики через нейросети - трендовые переделки, AI-визуал под эстетику бренда. Точечная работа под запрос.</div>
+      <ul class="format-includes">
+        <li>AI-ролик 15 сек под бренд</li>
+        <li>Адаптация мировых трендов</li>
+        <li>Стилизация под Shi Say</li>
+        <li>Готовый ролик для публикации</li>
+      </ul>
+      <div class="format-price">10 000 &#8381;</div>
+      <div class="format-price-sub">за ролик</div>
+    </div>
+
+    <!-- 02 - Креативный директор (выделен цветом) -->
+    <div class="format-card highlight reveal">
+      <div class="format-num">02</div>
+      <div class="format-badge">Главное предложение</div>
+      <div class="format-title">Креативный<br>директор</div>
+      <div class="format-desc">Работаю вместе с вашей командой - предлагаю идеи, помогаю с форматами, разбираю что работает и что можно улучшить.</div>
+      <ul class="format-includes">
+        <li>4 еженедельных созвона с командой</li>
+        <li>Помощь в разработке контент-плана</li>
+        <li>Правки сценариев и монтажа</li>
+        <li>Генерация идей под бренд</li>
+        <li>Обратная связь в общем чате</li>
+        <li>Рекомендации по нейросетям</li>
+      </ul>
+      <div class="format-price">40 000 &#8381;</div>
+      <div class="format-price-sub">в месяц</div>
+    </div>
+
+    <!-- 03 - Рилс-сериал (тёмный) -->
+    <div class="format-card reveal">
+      <div class="format-num">03</div>
+      <div class="format-badge">Максимальный результат</div>
+      <div class="format-title">Рилс-сериал от<br>креативного директора</div>
+      <div class="format-desc">Если вы работаете со мной как с креативным директором - рилс-сериал для Shi Say стоит не 200 000, а в 3 раза дешевле.</div>
+      <ul class="format-includes">
+        <li>Разработка концепции сериала</li>
+        <li>Сценарии на 6 серий</li>
+        <li>Профессиональная съёмка в шоуруме</li>
+        <li>Монтаж и постпродакшн</li>
+        <li>Наташа как лицо бренда</li>
+        <li>Рост личного бренда в соавторстве</li>
+      </ul>
+      <div class="format-old-price">200 000 &#8381;</div>
+      <div class="format-price">70 000 &#8381;</div>
+      <div class="format-price-sub">за сезон (6 серий) - только с кр. директорством</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WHY CREATIVE DIRECTOR -->
+<section class="section why-kd">
+  <div class="section-tag reveal">Зачем нужен креативный директор</div>
+  <h2 class="section-title reveal">Почему у Shi Say уже есть<br>команда — но потенциал больше</h2>
+
+  <div class="why-kd-grid">
+    <div class="why-kd-card reveal">
+      <div class="why-kd-num">01</div>
+      <div class="why-kd-title">Когда всё работает — но могло бы работать лучше</div>
+      <div class="why-kd-desc">У вас уже есть команда, выходит контент, есть охваты. Но есть ощущение что потенциал бренда больше чем то что видно в аккаунте. Именно здесь нужен человек снаружи.</div>
+    </div>
+    <div class="why-kd-card reveal">
+      <div class="why-kd-num">02</div>
+      <div class="why-kd-title">Я вижу то, что не видно изнутри</div>
+      <div class="why-kd-desc">Не потому что команда плохо работает. А потому что когда ты внутри бренда каждый день — сложно увидеть свежую идею. Я смотрю на Shi Say глазами аудитории и нахожу то, что зацепит.</div>
+    </div>
+    <div class="why-kd-card reveal">
+      <div class="why-kd-num">03</div>
+      <div class="why-kd-title">Не замена команды — а усиление</div>
+      <div class="why-kd-desc">Я не прихожу делать контент вместо вас. Я прихожу думать вместе с вами — предлагать идеи, помогать с форматами, разбирать что работает и что можно улучшить.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY REELS -->
+<section class="section why-reels">
+  <div class="section-tag reveal">Почему рилс-сериал</div>
+  <h2 class="section-title reveal">Формат, который<br>инстаграм продвигает сам</h2>
+  <div class="why-reels-grid">
+    <div class="why-reels-card reveal">
+      <div class="why-reels-num">01</div>
+      <div class="why-reels-title">Привычка возвращаться</div>
+      <div class="why-reels-desc">Обычный рилс посмотрели и забыли. Сериал создаёт привычку - аудитория ждёт следующую серию и подписывается.</div>
+    </div>
+    <div class="why-reels-card reveal">
+      <div class="why-reels-num">02</div>
+      <div class="why-reels-title">Алгоритмы в помощь</div>
+      <div class="why-reels-desc">Инстаграм видит досмотры, комментарии, сохранения - и продвигает сериал органически, без рекламного бюджета.</div>
+    </div>
+    <div class="why-reels-card reveal">
+      <div class="why-reels-num">03</div>
+      <div class="why-reels-title">Бренд + личность</div>
+      <div class="why-reels-desc">Наташа в кадре - это доверие и личная связь с аудиторией. Люди покупают у людей, не у логотипов.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section class="section cases">
+  <div class="section-tag reveal">Кейсы</div>
+  <h2 class="section-title reveal">Это не теория -<br>вот что уже работает</h2>
+
+  <div class="case-grid">
+    <div class="case-card featured reveal">
+      <div class="case-num">01 - Флагманский кейс</div>
+      <div class="case-tag">Бар Crazy Daisy - Москва</div>
+      <div class="case-title">«По ту сторону барной стойки»</div>
+      <div class="case-metrics">
+        <div>
+          <div class="case-metric-val">5 млн+</div>
+          <div class="case-metric-label">просмотров</div>
+        </div>
+        <div>
+          <div class="case-metric-val">+20 000</div>
+          <div class="case-metric-label">подписчиков</div>
+        </div>
+        <div>
+          <div class="case-metric-val">2,3 млн</div>
+          <div class="case-metric-label">одна серия</div>
+        </div>
+      </div>
+      <p class="case-text">До нас: 18 000 подписчиков, охваты 1-3к. Сняли 14 серий. Одна серия - 2,3 млн просмотров. Повысилась узнаваемость, посещаемость и выручка.</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="https://www.instagram.com/reel/DIkwr0mIiuE/" target="_blank" class="case-link"><span>2,3 млн просмотров</span></a>
+        <a href="https://www.instagram.com/reel/DJLqjXsIv07/" target="_blank" class="case-link"><span>3 млн просмотров</span></a>
+      </div>
+    </div>
+
+    <div class="case-card reveal">
+      <div class="case-num">02</div>
+      <div class="case-tag">Бренд одежды - Shetel Studios, Казахстан</div>
+      <div class="case-title">Рилс-сериал для fashion-бренда</div>
+      <div class="case-metrics">
+        <div>
+          <div class="case-metric-val">30 000+</div>
+          <div class="case-metric-label">подписчиков</div>
+        </div>
+      </div>
+      <p class="case-text">Казахстанский бренд запустил рилс-сериал. Основатель подтвердил: лояльность выросла, охваты увеличились, бренд стал узнаваемым.</p>
+      <a href="https://www.instagram.com/reel/DRuLigTAqmn/" target="_blank" class="case-link"><span>Смотреть первую серию</span></a>
+    </div>
+
+    <div class="case-card reveal">
+      <div class="case-num">03</div>
+      <div class="case-tag">Крупные бренды</div>
+      <div class="case-title">Спортмастер, Тануки, Пётр Осипов</div>
+      <div class="case-metrics">
+        <div>
+          <div class="case-metric-val">300 млн</div>
+          <div class="case-metric-label">Пётр Осипов</div>
+        </div>
+        <div>
+          <div class="case-metric-val">170 млн</div>
+          <div class="case-metric-label">Спортмастер</div>
+        </div>
+        <div>
+          <div class="case-metric-val">15 млн</div>
+          <div class="case-metric-label">Тануки</div>
+        </div>
+      </div>
+      <p class="case-text">Спортмастер - 170к подписчиков за 2 месяца с нуля. Тануки - 106к за 2 месяца. Пётр Осипов - 2 года работы, 300к подписчиков.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-glow"></div>
+  <h2 class="cta-title reveal">Готовы сделать<br><em>Shi Say</em> заметным?</h2>
+  <p class="cta-sub reveal">Начнём в мае - обсудим формат и стартуем</p>
+  <a href="https://t.me/alexander_yurtaev" target="_blank" class="cta-btn reveal">
+    <span>Написать в Telegram</span>
+    <span class="cta-btn-arrow">-></span>
+  </a>
+  <div class="cta-author reveal">Александр Юртаев - рилс-продюсер, креативный директор</div>
+</section>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // PRELOADER
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('done');
+      setTimeout(() => {
+        document.getElementById('preloader').style.display = 'none';
+        animateHero();
+      }, 600);
+    }, 1600);
+  });
+
+  // HERO
+  function animateHero() {
+    gsap.set('.hero-brand', { opacity: 0, y: 20 });
+    gsap.to('.hero-brand', { opacity: 1, y: 0, duration: 0.8, delay: 0.1 });
+
+    gsap.to('.hero-title .line span', {
+      y: 0, duration: 1,
+      stagger: 0.12,
+      ease: 'power3.out',
+      delay: 0.3
+    });
+
+    gsap.to('.hero-scroll-hint', { opacity: 1, y: 0, duration: 0.6, delay: 1.2 });
+    gsap.to('.hero-sub', { opacity: 1, y: 0, duration: 0.8, delay: 0.5 });
+    gsap.to('.hero-desc', { opacity: 1, y: 0, duration: 0.8, delay: 0.7 });
+  }
+
+  // SCROLL REVEAL
+  gsap.utils.toArray('.reveal').forEach(el => {
+    const parent = el.closest('.format-grid, .case-grid, .why-kd-grid, .why-reels-grid, .stats');
+    const delay = parent
+      ? Array.from(parent.children).indexOf(el) * 0.12
+      : 0;
+
+    gsap.to(el, {
+      opacity: 1, y: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      delay,
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 87%',
+        once: true
+      }
+    });
+  });
+
+  // PARALLAX hero right
+  gsap.to('.hero-right', {
+    yPercent: 8,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+</script>
+
+</body>
+</html>
